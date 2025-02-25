@@ -70,16 +70,13 @@ class Remove extends Command {
 
 /// Operators (+, -, /, *) should use this as base class to avoid duplication
 abstract class Operator implements Command {
-  late num operand1;
-  late num operand2;
-
   num operate(num operand1, num operand2);
 
   @override
   CalculatorState apply(CalculatorState state) {
     if (state.stack.length < 2) return state;
-    operand2 = state.stack.last;
-    operand1 = state.stack.last;
+    final operand2 = state.stack.last;
+    final operand1 = state.stack.last;
     return CalculatorState(
       input: state.input,
       stack: [
