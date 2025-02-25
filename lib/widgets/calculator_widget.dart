@@ -24,7 +24,7 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
       setState(() {
         if (kDebugMode) debugPrint("Old state: $calculatorState}");
 
-        calculatorState = command.apply(calculatorState);
+        calculatorState = command.execute(calculatorState);
 
         if (kDebugMode) {
           debugPrint("New state: $calculatorState}");

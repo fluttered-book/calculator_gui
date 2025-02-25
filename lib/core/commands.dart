@@ -4,12 +4,12 @@ import 'calculator_state.dart';
 
 /// Abstract base class for all calculator operations
 abstract class Command {
-  CalculatorState apply(CalculatorState state);
+  CalculatorState execute(CalculatorState state);
 }
 
 class Enter implements Command {
   @override
-  CalculatorState apply(CalculatorState state) {
+  CalculatorState execute(CalculatorState state) {
     final number = double.tryParse(state.input);
     if (number == null) return state;
     return CalculatorState(
@@ -22,14 +22,14 @@ class Enter implements Command {
 
 class Clear implements Command {
   @override
-  CalculatorState apply(CalculatorState state) {
+  CalculatorState execute(CalculatorState state) {
     return CalculatorState.empty();
   }
 }
 
 class Undo extends Command {
   @override
-  CalculatorState apply(CalculatorState state) {
+  CalculatorState execute(CalculatorState state) {
     if (state.history.isEmpty) return state;
     return CalculatorState(
       input: state.input,
@@ -45,7 +45,7 @@ class Append extends Command {
   final String digit;
 
   @override
-  CalculatorState apply(CalculatorState state) {
+  CalculatorState execute(CalculatorState state) {
     final number = double.tryParse(state.input + digit.toString());
     if (number == null) return state;
     return CalculatorState(
@@ -58,7 +58,7 @@ class Append extends Command {
 
 class Remove extends Command {
   @override
-  CalculatorState apply(CalculatorState state) {
+  CalculatorState execute(CalculatorState state) {
     if (state.input.isEmpty) return state;
     return CalculatorState(
       input: state.input.characters.take(state.input.length - 1).toString(),
@@ -73,10 +73,10 @@ abstract class Operator implements Command {
   num operate(num operand1, num operand2);
 
   @override
-  CalculatorState apply(CalculatorState state) {
+  CalculatorState execute(CalculatorState state) {
     if (state.stack.length < 2) return state;
     final operand2 = state.stack.last;
-    final operand1 = state.stack.last;
+    final operand1 = state.stack.elementAt(state.stack.length - 2);
     return CalculatorState(
       input: state.input,
       stack: [
@@ -84,15 +84,6 @@ abstract class Operator implements Command {
         operate(operand1, operand2)
       ],
       history: [...state.history, state.stack],
-    );
-  }
-
-  @override
-  CalculatorState unapply(CalculatorState state) {
-    return CalculatorState(
-      input: state.input,
-      stack: [...state.stack.take(state.stack.length - 1), operand1, operand2],
-      history: state.history.take(state.history.length - 1).toList(),
     );
   }
 }
@@ -114,5 +105,7 @@ class Multiply extends Operator {
 
 class Divide extends Operator {
   @override
-  num operate(num operand1, num operand2) => operand1 / operand2;
+  num operate(num operand1, num operand2) {
+    return operand1 / operand2;
+  }
 }
