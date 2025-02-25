@@ -25,6 +25,7 @@ class CalculatorDisplay extends StatelessWidget {
                 fit: BoxFit.fitHeight,
                 child: Text(
                   state.input,
+                  key: ValueKey('input'),
                   style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
                 ),
               ),
@@ -34,6 +35,7 @@ class CalculatorDisplay extends StatelessWidget {
               child: FittedBox(
                 fit: BoxFit.fitHeight,
                 child: Text(
+                  key: ValueKey('stack'),
                   state.stack.join(', '),
                   style: TextStyle(
                       fontSize: 32,
