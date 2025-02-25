@@ -12,6 +12,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  testWidgets('Tap on digits', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(CalculatorApp());
+    final digits = '123456789.0';
+
+    for (final digit in digits.characters) {
+      await tester.tapButton(digit);
+    }
+
+    expect(find.inputText(), digits);
+  });
+
   testWidgets('"↲" enters/adds a number to the stack',
       (WidgetTester tester) async {
     // Build our app and trigger a frame.
