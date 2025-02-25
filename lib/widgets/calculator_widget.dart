@@ -1,7 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../core/commands.dart';
-import '../core/internal_state.dart';
+import '../core/calculator_state.dart';
 import 'calculator_button.dart';
 import 'calculator_display.dart';
 
@@ -16,15 +17,19 @@ class CalculatorWidget extends StatefulWidget {
 
 class _CalculatorWidgetState extends State<CalculatorWidget> {
   late List<List<ButtonDef>> buttons;
-  late InternalState internalState;
+  late CalculatorState calculatorState;
 
   void Function() on(Command command) {
     return () {
       setState(() {
-        print("Old state: $internalState}");
-        internalState = command.apply(internalState);
-        print("New state: $internalState}");
-        print("---");
+        if (kDebugMode) debugPrint("Old state: $calculatorState}");
+
+        calculatorState = command.apply(calculatorState);
+
+        if (kDebugMode) {
+          debugPrint("New state: $calculatorState}");
+          debugPrint("---");
+        }
       });
     };
   }
@@ -64,7 +69,7 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
         ("↲", on(Enter()))
       ],
     ];
-    internalState = InternalState.empty();
+    calculatorState = CalculatorState.empty();
   }
 
   @override
@@ -74,7 +79,7 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
       children: [
         Flexible(
           flex: 2,
-          child: CalculatorDisplay(state: internalState),
+          child: CalculatorDisplay(state: calculatorState),
         ),
         for (final (rowIndex, row) in buttons.indexed)
           Flexible(

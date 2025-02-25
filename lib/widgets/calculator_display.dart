@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../core/internal_state.dart';
+import '../core/calculator_state.dart';
 
 class CalculatorDisplay extends StatelessWidget {
   const CalculatorDisplay({super.key, required this.state});
 
-  final InternalState state;
+  final CalculatorState state;
 
   get stack => state.stack;
 
@@ -19,19 +19,27 @@ class CalculatorDisplay extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Text(
-              state.input,
-              style: TextStyle(
-                fontSize: 64,
-                fontWeight: FontWeight.bold,
+            Flexible(
+              flex: 1,
+              child: FittedBox(
+                fit: BoxFit.fitHeight,
+                child: Text(
+                  state.input,
+                  style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
-            Text(
-              state.stack.join(', '),
-              style: TextStyle(
-                fontSize: 48,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey,
+            Flexible(
+              flex: 1,
+              child: FittedBox(
+                fit: BoxFit.fitHeight,
+                child: Text(
+                  state.stack.join(', '),
+                  style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey),
+                ),
               ),
             ),
           ],

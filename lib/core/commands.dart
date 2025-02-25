@@ -1,18 +1,18 @@
 import 'package:flutter/widgets.dart';
 
-import 'internal_state.dart';
+import 'calculator_state.dart';
 
 /// Abstract base class for all calculator operations
 abstract class Command {
-  InternalState apply(InternalState state);
+  CalculatorState apply(CalculatorState state);
 }
 
 class Enter implements Command {
   @override
-  InternalState apply(InternalState state) {
+  CalculatorState apply(CalculatorState state) {
     final number = double.tryParse(state.input);
     if (number == null) return state;
-    return InternalState(
+    return CalculatorState(
       input: "",
       stack: [...state.stack, number],
       history: [...state.history, state.stack],
@@ -22,16 +22,16 @@ class Enter implements Command {
 
 class Clear implements Command {
   @override
-  InternalState apply(InternalState state) {
-    return InternalState.empty();
+  CalculatorState apply(CalculatorState state) {
+    return CalculatorState.empty();
   }
 }
 
 class Undo extends Command {
   @override
-  InternalState apply(InternalState state) {
+  CalculatorState apply(CalculatorState state) {
     if (state.history.isEmpty) return state;
-    return InternalState(
+    return CalculatorState(
       input: state.input,
       stack: state.history.last,
       history: [...state.history.take(state.history.length - 1)],
@@ -45,10 +45,10 @@ class Append extends Command {
   final String digit;
 
   @override
-  InternalState apply(InternalState state) {
+  CalculatorState apply(CalculatorState state) {
     final number = double.tryParse(state.input + digit.toString());
     if (number == null) return state;
-    return InternalState(
+    return CalculatorState(
       input: state.input + digit.toString(),
       stack: state.stack,
       history: [...state.history, state.stack],
@@ -58,9 +58,9 @@ class Append extends Command {
 
 class Remove extends Command {
   @override
-  InternalState apply(InternalState state) {
+  CalculatorState apply(CalculatorState state) {
     if (state.input.isEmpty) return state;
-    return InternalState(
+    return CalculatorState(
       input: state.input.characters.take(state.input.length - 1).toString(),
       stack: state.stack,
       history: state.history,
@@ -76,11 +76,11 @@ abstract class Operator implements Command {
   num operate(num operand1, num operand2);
 
   @override
-  InternalState apply(InternalState state) {
+  CalculatorState apply(CalculatorState state) {
     if (state.stack.length < 2) return state;
     operand2 = state.stack.last;
     operand1 = state.stack.last;
-    return InternalState(
+    return CalculatorState(
       input: state.input,
       stack: [
         ...state.stack.take(state.stack.length - 2),
@@ -91,8 +91,8 @@ abstract class Operator implements Command {
   }
 
   @override
-  InternalState unapply(InternalState state) {
-    return InternalState(
+  CalculatorState unapply(CalculatorState state) {
+    return CalculatorState(
       input: state.input,
       stack: [...state.stack.take(state.stack.length - 1), operand1, operand2],
       history: state.history.take(state.history.length - 1).toList(),
